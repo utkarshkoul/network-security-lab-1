@@ -1,19 +1,17 @@
-def vigenere_encrypt(text, key):
+def vigenere_encrypt(text, key, decrypt=False):
     result = ""
+    key = key.upper()
     key_index = 0
 
     for char in text:
         if char.isalpha():
-            if char.isupper():
-                base = ord('A')
-            else:
-                base = ord('a')
+            shift = ord(key[key_index % len(key)]) - ord('A')
 
-            shift = ord(key[key_index % len(key)].lower()) - ord('a')
+            if decrypt:
+                shift = -shift
 
-            new_position = (ord(char) - base + shift) % 26
-            result += chr(new_position + base)
-
+            encrypted = chr((ord(char.upper()) - ord('A') + shift) % 26 + ord('A'))
+            result += encrypted
             key_index += 1
         else:
             result += char
@@ -21,45 +19,12 @@ def vigenere_encrypt(text, key):
     return result
 
 
-def vigenere_decrypt(text, key):
-    result = ""
-    key_index = 0
+plaintext = "HELLO"
+key = "KEY"
 
-    for char in text:
-        if char.isalpha():
-            if char.isupper():
-                base = ord('A')
-            else:
-                base = ord('a')
+encrypted = vigenere_encrypt(plaintext, key)
 
-            shift = ord(key[key_index % len(key)].lower()) - ord('a')
+print(f"Original: {plaintext}")
+print(f"Encrypted: {encrypted}")
 
-            new_position = (ord(char) - base - shift) % 26
-            result += chr(new_position + base)
-
-            key_index += 1
-        else:
-            result += char
-
-    return result
-
-
-# Taking input from user
-plaintext = input("Enter the message: ")
-key = input("Enter the key: ")
-
-# Checking the key
-if not key.isalpha():
-    print("Error: Key must contain alphabets only.")
-    exit()
-
-# Encryption
-ciphertext = vigenere_encrypt(plaintext, key)
-
-# Decryption
-decrypted = vigenere_decrypt(ciphertext, key)
-
-# Output
-print("Encrypted :", ciphertext)
-print("Decrypted :", decrypted)
-print("Correct?  :", decrypted == plaintext)
+print(f"Decrypted: {vigenere_encrypt(encrypted, key, True)}")
